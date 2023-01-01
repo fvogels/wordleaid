@@ -1,3 +1,7 @@
+fn letter_index(ch: char) -> usize {
+    (ch as usize) - ('A' as usize)
+}
+
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 enum LetterJudgment {
     Incorrect,
@@ -87,13 +91,54 @@ impl<const N: usize> Judge<N> for SimpleJudge<N> {
                     }
                 }
             }
-
         }
 
         judgment
     }
 }
 
+struct SimpleJudge2<const N: usize> {
+
+}
+
+impl<const N: usize> SimpleJudge2<N> {
+    pub fn new() -> Self {
+        SimpleJudge2 { }
+    }
+}
+
+impl<const N: usize> Judge<N> for SimpleJudge2<N> {
+    fn judge(&self, judged: &Word<N>, goal: &Word<N>) -> WordJudgment<N> {
+        let mut used = [false; N];
+        let mut freqs = [0; 26];
+        let mut judgment = WordJudgment { letters: [LetterJudgment::Incorrect; N] };
+
+        for i in 0..N {
+            let judged_letter = judged.letters[i];
+            let goal_letter = goal.letters[i];
+
+            if judged_letter == goal_letter {
+                judgment.letters[i] = LetterJudgment::Correct;
+                used[i] = true;
+            } else {
+                let index = letter_index(goal_letter);
+                freqs[index] += 1;
+            }
+        }
+
+        for i in 0..N {
+            if judgment.letters[i] == LetterJudgment::Incorrect {
+                let judged_letter_index = letter_index(judged.letters[i]);
+                if freqs[judged_letter_index] > 0 {
+                    judgment.letters[i] = LetterJudgment::Misplaced;
+                    freqs[judged_letter_index] -= 1;
+                }
+            }
+        }
+
+        judgment
+    }
+}
 
 fn read_word_list<const N: usize>(path: &str) -> Vec<Word<N>> {
     let contents = std::fs::read_to_string(path).unwrap();
@@ -104,13 +149,16 @@ fn read_word_list<const N: usize>(path: &str) -> Vec<Word<N>> {
 
 fn main() {
     let words = read_word_list::<5>("words.txt");
-    let judge = SimpleJudge::<5>::new();
+    let judge = SimpleJudge2::<5>::new();
+    let mut count = 0;
 
     for goal in words.iter() {
         for judged in words.iter() {
             judge.judge(judged, goal);
         }
     }
+
+    println!("{count}");
 }
 
 
@@ -127,7 +175,7 @@ mod test {
     #[case("ABCDE", "EDCBA", "MMCMM")]
     #[case("ABCDE", "FGHIJ", ".....")]
     fn simple_judge(#[case] judged: &str, #[case] goal: &str, #[case] judgment_string: &str) {
-        let judge = SimpleJudge::<5>::new();
+        let judge = SimpleJudge2::<5>::new();
         let judged = Word::from_string(judged);
         let goal = Word::from_string(goal);
 
