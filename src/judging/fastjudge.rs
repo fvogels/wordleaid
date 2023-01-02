@@ -1,15 +1,15 @@
-use crate::{judgments::{WordJudgment, Word, LetterJudgment}, util::letter_index};
+use crate::{
+    judgments::{LetterJudgment, Word, WordJudgment},
+    util::letter_index,
+};
 
 use super::Judge;
 
-
-pub struct FastJudge<const N: usize> {
-
-}
+pub struct FastJudge<const N: usize> {}
 
 impl<const N: usize> FastJudge<N> {
     pub fn new() -> Self {
-        FastJudge { }
+        FastJudge {}
     }
 }
 
@@ -17,7 +17,9 @@ impl<const N: usize> Judge<N> for FastJudge<N> {
     fn judge(&self, judged: &Word<N>, goal: &Word<N>) -> WordJudgment<N> {
         let mut used = [false; N];
         let mut freqs = [0; 26];
-        let mut judgment = WordJudgment { letters: [LetterJudgment::Incorrect; N] };
+        let mut judgment = WordJudgment {
+            letters: [LetterJudgment::Incorrect; N],
+        };
 
         for i in 0..N {
             let judged_letter = judged.letters[i];

@@ -22,7 +22,9 @@ pub struct WordJudgment<const N: usize> {
 
 impl<const N: usize> WordJudgment<N> {
     pub fn new() -> Self {
-        WordJudgment { letters: [LetterJudgment::Incorrect; N] }
+        WordJudgment {
+            letters: [LetterJudgment::Incorrect; N],
+        }
     }
 
     pub fn parse(string: &str) -> Self {
@@ -54,7 +56,7 @@ impl<const N: usize> WordJudgment<N> {
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Word<const N: usize> {
-    pub letters: [char; N]
+    pub letters: [char; N],
 }
 
 impl<const N: usize> Word<N> {

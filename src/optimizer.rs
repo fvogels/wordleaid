@@ -1,4 +1,7 @@
-use crate::{judgments::{Word, WordJudgment}, judging::{Judge, FastJudge}};
+use crate::{
+    judging::{FastJudge, Judge},
+    judgments::{Word, WordJudgment},
+};
 
 pub struct GuessOptimizer<const N: usize> {
     pub words: Vec<Word<N>>,
@@ -6,7 +9,7 @@ pub struct GuessOptimizer<const N: usize> {
 }
 
 impl<const N: usize> GuessOptimizer<N> {
-    pub fn new(words: impl Iterator<Item=Word<N>>) -> Self {
+    pub fn new(words: impl Iterator<Item = Word<N>>) -> Self {
         let words: Vec<_> = words.collect();
         let judge = FastJudge::<N>::new();
         let mut matrix = Vec::from_iter((0..words.len()).map(|_| vec![0; words.len()]));
@@ -26,7 +29,10 @@ impl<const N: usize> GuessOptimizer<N> {
     }
 
     pub fn determine_best_guess(&self, guesses: &Vec<u64>, goals: &Vec<u64>) -> u64 {
-        *guesses.iter().min_by_key(|&guess| (self.evaluate_guess(*guess, goals) * 1000000f64) as u64).unwrap()
+        *guesses
+            .iter()
+            .min_by_key(|&guess| (self.evaluate_guess(*guess, goals) * 1000000f64) as u64)
+            .unwrap()
     }
 
     fn evaluate_guess(&self, guess: u64, goals: &Vec<u64>) -> f64 {

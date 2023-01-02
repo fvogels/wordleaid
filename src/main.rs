@@ -1,13 +1,11 @@
-use judging::{Judge, FastJudge};
-use judgments::{Word, WordJudgment};
+use judgments::Word;
 
 use crate::optimizer::GuessOptimizer;
 
-mod judgments;
 mod judging;
-mod util;
+mod judgments;
 mod optimizer;
-
+mod util;
 
 fn read_word_list<const N: usize>(path: &str) -> Vec<Word<N>> {
     let contents = std::fs::read_to_string(path).unwrap();
@@ -25,7 +23,6 @@ fn main() {
 
     println!("{:?}", best_guess);
 }
-
 
 #[cfg(test)]
 mod test {
