@@ -28,6 +28,8 @@ fn main() {
 mod test {
     use rstest::rstest;
 
+    use crate::{judging::FastJudge, judgments::WordJudgment};
+
     #[cfg(test)]
     use super::*;
 
