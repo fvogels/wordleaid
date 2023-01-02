@@ -5,7 +5,7 @@ use crate::{
 
 pub struct GuessOptimizer<const N: usize> {
     words: Vec<Word<N>>,
-    matrix: Vec<Vec<u64>>,
+    matrix: Vec<Vec<usize>>,
 }
 
 impl<const N: usize> GuessOptimizer<N> {
@@ -34,18 +34,22 @@ impl<const N: usize> GuessOptimizer<N> {
         self.words[index]
     }
 
-    fn judge(&self, guess: u64, goal: u64) -> u64 {
+    pub fn word_indices(&self) -> impl Iterator<Item=usize> {
+        0..self.words.len()
+    }
+
+    pub fn judge(&self, guess: usize, goal: usize) -> usize {
         self.matrix[guess as usize][goal as usize]
     }
 
-    pub fn determine_best_guess(&self, guesses: &Vec<u64>, goals: &Vec<u64>) -> u64 {
+    pub fn determine_best_guess(&self, guesses: &Vec<usize>, goals: &Vec<usize>) -> usize {
         *guesses
             .iter()
-            .min_by_key(|&guess| (self.evaluate_guess(*guess, goals) * 1000000f64) as u64)
+            .min_by_key(|&guess| (self.evaluate_guess(*guess, goals) * 1000000f64) as usize)
             .unwrap()
     }
 
-    fn evaluate_guess(&self, guess: u64, goals: &Vec<u64>) -> f64 {
+    fn evaluate_guess(&self, guess: usize, goals: &Vec<usize>) -> f64 {
         let mut table = vec![0f64; WordJudgment::<N>::max_int_value() as usize];
 
         for goal in goals {

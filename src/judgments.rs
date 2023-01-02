@@ -6,7 +6,7 @@ pub enum LetterJudgment {
 }
 
 impl LetterJudgment {
-    pub fn to_int(&self) -> u64 {
+    pub fn to_int(&self) -> usize {
         match self {
             LetterJudgment::Incorrect => 0,
             LetterJudgment::Correct => 1,
@@ -45,12 +45,12 @@ impl<const N: usize> WordJudgment<N> {
         result
     }
 
-    pub fn to_int(&self) -> u64 {
+    pub fn to_int(&self) -> usize {
         self.letters.iter().fold(0, |acc, k| acc * 3 + k.to_int())
     }
 
-    pub const fn max_int_value() -> u64 {
-        3u64.pow(N as u32)
+    pub const fn max_int_value() -> usize {
+        3usize.pow(N as u32)
     }
 }
 
@@ -69,5 +69,9 @@ impl<const N: usize> Word<N> {
         }
 
         Word { letters: result }
+    }
+
+    pub fn to_string(&self) -> String {
+        self.letters.iter().collect()
     }
 }

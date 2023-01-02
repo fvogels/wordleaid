@@ -1,7 +1,10 @@
-use judgments::Word;
+use interactive::Interactive;
+use judging::FastJudge;
+use judgments::{Word, WordJudgment};
 
 use crate::optimizer::GuessOptimizer;
 
+mod interactive;
 mod judging;
 mod judgments;
 mod optimizer;
@@ -15,13 +18,25 @@ fn read_word_list<const N: usize>(path: &str) -> Vec<Word<N>> {
 
 fn main() {
     let words = read_word_list::<5>("words.txt");
-    let indices: Vec<u64> = (0..words.len()).map(|x| x as u64).collect();
-    let guesser = GuessOptimizer::<5>::new(words.into_iter());
+    // let mut interactive = Interactive::new(words.into_iter());
+    // interactive.guess("TARES", "M.M.M");
 
-    let best_guess = guesser.determine_best_guess(&indices, &indices);
-    let best_guess = guesser.find_word_by_index(best_guess as usize);
+    // for s in interactive.possible_solutions().iter() {
+    //     println!("{}", s);
+    // }
+    // println!("");
 
-    println!("{:?}", best_guess);
+    // interactive.guess("HOIST", "..CMC");
+
+    // for s in interactive.possible_solutions().iter() {
+    //     println!("{}", s);
+    // }
+    // println!("");
+
+    let all_words = ["AAAAA", "BBBBB", "CCCCC"].iter().map(|&x| Word::<5>::from_string(x));
+    let go = GuessOptimizer::<5>::new(all_words.into_iter());
+    let i = go.determine_best_guess(&vec![0, 1, 2], &vec![0]);
+    println!("{}", i);
 }
 
 #[cfg(test)]
@@ -38,7 +53,7 @@ mod test {
     #[case("TRAIN", "DRAIN", ".CCCC")]
     #[case("ABCDE", "EDCBA", "MMCMM")]
     #[case("ABCDE", "FGHIJ", ".....")]
-    fn simple_judge(#[case] judged: &str, #[case] goal: &str, #[case] judgment_string: &str) {
+    fn fast_judge(#[case] judged: &str, #[case] goal: &str, #[case] judgment_string: &str) {
         let judge = FastJudge::<5>::new();
         let judged = Word::from_string(judged);
         let goal = Word::from_string(goal);
