@@ -54,7 +54,7 @@ impl<const N: usize> WordJudgment<N> {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Word<const N: usize> {
     pub letters: [char; N],
 }

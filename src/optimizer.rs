@@ -4,13 +4,15 @@ use crate::{
 };
 
 pub struct GuessOptimizer<const N: usize> {
-    pub words: Vec<Word<N>>,
+    words: Vec<Word<N>>,
     matrix: Vec<Vec<u64>>,
 }
 
 impl<const N: usize> GuessOptimizer<N> {
     pub fn new(words: impl Iterator<Item = Word<N>>) -> Self {
-        let words: Vec<_> = words.collect();
+        let mut words: Vec<_> = words.collect();
+        words.sort();
+
         let judge = FastJudge::<N>::new();
         let mut matrix = Vec::from_iter((0..words.len()).map(|_| vec![0; words.len()]));
 
@@ -22,6 +24,14 @@ impl<const N: usize> GuessOptimizer<N> {
         }
 
         GuessOptimizer { words, matrix }
+    }
+
+    pub fn find_word_index(&self, word: &Word<N>) -> usize {
+        self.words.binary_search(word).expect("Word not in word list")
+    }
+
+    pub fn find_word_by_index(&self, index: usize) -> Word<N> {
+        self.words[index]
     }
 
     fn judge(&self, guess: u64, goal: u64) -> u64 {

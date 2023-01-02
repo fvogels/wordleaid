@@ -19,7 +19,7 @@ fn main() {
     let guesser = GuessOptimizer::<5>::new(words.into_iter());
 
     let best_guess = guesser.determine_best_guess(&indices, &indices);
-    let best_guess = guesser.words[best_guess as usize];
+    let best_guess = guesser.find_word_by_index(best_guess as usize);
 
     println!("{:?}", best_guess);
 }
