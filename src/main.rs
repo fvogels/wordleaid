@@ -1,6 +1,7 @@
 use interactive::Interactive;
 use judging::FastJudge;
 use judgments::{Word, WordJudgment};
+use std::io;
 
 use crate::optimizer::GuessOptimizer;
 
@@ -18,25 +19,33 @@ fn read_word_list<const N: usize>(path: &str) -> Vec<Word<N>> {
 
 fn main() {
     let words = read_word_list::<5>("words.txt");
-    // let mut interactive = Interactive::new(words.into_iter());
-    // interactive.guess("TARES", "M.M.M");
+    let mut interactive = Interactive::new(words.into_iter());
+    let stdin = io::stdin();
+    let stdout = io::stdout();
 
-    // for s in interactive.possible_solutions().iter() {
-    //     println!("{}", s);
-    // }
-    // println!("");
+    loop {
+        match interactive.solution() {
+            Some(solution) => {
+                println!("Only one solution left: {}", solution);
+            }
+            None => {
+                println!("Possible solutions: {}", interactive.possible_solution_count());
+                println!("Best guess: {}", interactive.find_optimal_guess().to_string());
+            }
+        }
 
-    // interactive.guess("HOIST", "..CMC");
+        println!("Enter guess:");
+        let mut guess = String::new();
+        stdin.read_line(&mut guess).unwrap();
+        let guess = guess.strip_suffix("\r\n").or_else(|| { guess.strip_suffix("\n") }).unwrap();
 
-    // for s in interactive.possible_solutions().iter() {
-    //     println!("{}", s);
-    // }
-    // println!("");
+        println!("Enter jugdment:");
+        let mut judgment = String::new();
+        stdin.read_line(&mut judgment).unwrap();
+        let judgment = judgment.strip_suffix("\r\n").or_else(|| { judgment.strip_suffix("\n") }).unwrap();
 
-    let all_words = ["AAAAA", "BBBBB", "CCCCC"].iter().map(|&x| Word::<5>::from_string(x));
-    let go = GuessOptimizer::<5>::new(all_words.into_iter());
-    let i = go.determine_best_guess(&vec![0, 1, 2], &vec![0]);
-    println!("{}", i);
+        interactive.guess(guess, judgment);
+    }
 }
 
 #[cfg(test)]

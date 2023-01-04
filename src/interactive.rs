@@ -41,4 +41,12 @@ impl<const N: usize> Interactive<N> {
     pub fn possible_solutions(&self) -> Vec<String> {
         self.candidates.iter().map(|&idx| self.optimizer.find_word_by_index(idx).to_string()).collect()
     }
+
+    pub fn possible_solution_count(&self) -> usize {
+        self.candidates.len()
+    }
+
+    pub fn reset(&mut self) {
+        self.candidates = self.optimizer.word_indices().collect();
+    }
 }
