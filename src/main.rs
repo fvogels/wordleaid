@@ -21,7 +21,6 @@ fn main() {
     let words = read_word_list::<5>("words.txt");
     let mut interactive = Interactive::new(words.into_iter());
     let stdin = io::stdin();
-    let stdout = io::stdout();
 
     loop {
         match interactive.solution() {
@@ -37,11 +36,13 @@ fn main() {
         println!("Enter guess:");
         let mut guess = String::new();
         stdin.read_line(&mut guess).unwrap();
+        guess = guess.to_ascii_uppercase();
         let guess = guess.strip_suffix("\r\n").or_else(|| { guess.strip_suffix("\n") }).unwrap();
 
         println!("Enter jugdment:");
         let mut judgment = String::new();
         stdin.read_line(&mut judgment).unwrap();
+        judgment = judgment.to_ascii_uppercase();
         let judgment = judgment.strip_suffix("\r\n").or_else(|| { judgment.strip_suffix("\n") }).unwrap();
 
         interactive.guess(guess, judgment);
