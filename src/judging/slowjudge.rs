@@ -38,3 +38,30 @@ impl<const N: usize> Judge<N> for SlowJudge<N> {
         judgment
     }
 }
+
+
+#[cfg(test)]
+mod test {
+    use rstest::rstest;
+
+    use crate::{judging::{Judge, FastJudge}, judgments::WordJudgment};
+
+    #[cfg(test)]
+    use super::*;
+
+    #[rstest]
+    #[case("TRAIN", "TRAIN", "CCCCC")]
+    #[case("TRAIN", "DRAIN", "XCCCC")]
+    #[case("ABCDE", "EDCBA", "MMCMM")]
+    #[case("ABCDE", "FGHIJ", "XXXXX")]
+    fn judge(#[case] judged: &str, #[case] goal: &str, #[case] judgment_string: &str) {
+        let judge = SlowJudge::<5>::new();
+        let judged = Word::from_string(judged);
+        let goal = Word::from_string(goal);
+
+        let actual = judge.judge(&judged, &goal);
+        let expected = WordJudgment::<5>::parse(judgment_string);
+
+        assert_eq!(expected, actual);
+    }
+}

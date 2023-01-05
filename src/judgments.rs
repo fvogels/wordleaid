@@ -35,7 +35,7 @@ impl<const N: usize> WordJudgment<N> {
 
         for i in 0..N {
             result.letters[i] = match letters[i] {
-                '.' => LetterJudgment::Incorrect,
+                'X' => LetterJudgment::Incorrect,
                 'C' => LetterJudgment::Correct,
                 'M' => LetterJudgment::Misplaced,
                 _ => panic!("Invalid string"),
