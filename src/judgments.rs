@@ -27,22 +27,24 @@ impl<const N: usize> WordJudgment<N> {
         }
     }
 
-    pub fn parse(string: &str) -> Self {
-        assert!(string.len() == N);
+    pub fn parse(string: &str) -> Option<Self> {
+        if string.len() != N {
+            None
+        } else {
+            let mut result = WordJudgment::new();
+            let letters: Vec<_> = string.chars().collect();
 
-        let mut result = WordJudgment::new();
-        let letters: Vec<_> = string.chars().collect();
-
-        for i in 0..N {
-            result.letters[i] = match letters[i] {
-                'X' => LetterJudgment::Incorrect,
-                'C' => LetterJudgment::Correct,
-                'M' => LetterJudgment::Misplaced,
-                _ => panic!("Invalid string"),
+            for i in 0..N {
+                result.letters[i] = match letters[i] {
+                    'X' => LetterJudgment::Incorrect,
+                    'C' => LetterJudgment::Correct,
+                    'M' => LetterJudgment::Misplaced,
+                    _ => return None,
+                }
             }
-        }
 
-        result
+            Some(result)
+        }
     }
 
     pub fn to_int(&self) -> usize {
@@ -60,15 +62,19 @@ pub struct Word<const N: usize> {
 }
 
 impl<const N: usize> Word<N> {
-    pub fn from_string(string: &str) -> Self {
-        let mut result = [' '; N];
-        let letters: Vec<_> = string.chars().collect();
+    pub fn from_string(string: &str) -> Result<Self, String> {
+        if string.len() != N {
+            Err(format!("Invalid word length: {} has length {}", string, string.len()))
+        } else {
+            let mut result = [' '; N];
+            let letters: Vec<_> = string.chars().collect();
 
-        for i in 0..N {
-            result[i] = letters[i];
+            for i in 0..N {
+                result[i] = letters[i];
+            }
+
+            Ok(Word { letters: result })
         }
-
-        Word { letters: result }
     }
 
     pub fn to_string(&self) -> String {

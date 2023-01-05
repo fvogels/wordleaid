@@ -22,10 +22,12 @@ impl<const N: usize> Interactive<N> {
         self.optimizer.find_word_by_index(optimal_index as usize)
     }
 
-    pub fn guess(&mut self, guessed: &str, judgment: &str) {
-        let guessed = self.optimizer.find_word_index(&Word::<N>::from_string(guessed));
-        let judgment =  WordJudgment::<N>::parse(judgment).to_int();
+    pub fn guess(&mut self, guessed: &str, judgment: &str) -> Result<(), String> {
+        let guessed = Word::<N>::from_string(guessed)?;
+        let guessed = self.optimizer.find_word_index(&guessed);
+        let judgment =  WordJudgment::<N>::parse(judgment).ok_or("Invalid judgment".to_owned())?.to_int();
         self.candidates.retain(|c| self.optimizer.judge(guessed, *c) == judgment);
+        Ok(())
     }
 
     pub fn solution(&self) -> Option<String> {
